@@ -34,11 +34,14 @@ def speech_to_text(audio_path):
 
     text = text.strip()
 
-    print("Detected Language :", info.language)
-    print("Transcription     :", text)
+    print("Detected Language :", getattr(info, "language", "unknown"))
+    try:
+        print("Transcription     :", text)
+    except Exception:
+        print("Transcription (bytes):", text.encode("utf-8", errors="replace"))
     print("====================================\n")
 
     return {
-        "language": info.language,
+        "language": getattr(info, "language", "ur"),
         "text": text
-    }
+    }

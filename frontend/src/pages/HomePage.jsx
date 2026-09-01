@@ -61,7 +61,7 @@ function HomePage() {
           <div className="mt-8 flex flex-wrap gap-4">
             <button
               type="button"
-              onClick={() => navigate('/app/submit')}
+              onClick={() => navigate('/submit')}
               className="btn-primary py-3.5 px-6 text-sm"
             >
               <Sparkles size={18} />
@@ -69,7 +69,7 @@ function HomePage() {
             </button>
             <button
               type="button"
-              onClick={() => navigate('/app/how-it-works')}
+              onClick={() => navigate('/how-it-works')}
               className="btn-secondary py-3.5 px-6 text-sm"
             >
               <HelpCircle size={18} className="text-[#10b981]" />
@@ -94,7 +94,7 @@ function HomePage() {
         <div className="grid gap-6 md:grid-cols-2">
           {/* Card 1: Start New Complaint */}
           <article
-            onClick={() => navigate('/app/submit')}
+            onClick={() => navigate('/submit')}
             className="feature-card border border-slate-900 bg-slate-950/20 hover:border-[#0B6B3A]/30 p-8 cursor-pointer rounded-2xl flex flex-col justify-between transition-all duration-300 group"
           >
             <div className="space-y-4">
@@ -114,7 +114,7 @@ function HomePage() {
 
           {/* Card 2: How It Works */}
           <article
-            onClick={() => navigate('/app/how-it-works')}
+            onClick={() => navigate('/how-it-works')}
             className="feature-card border border-slate-900 bg-slate-950/20 hover:border-[#10b981]/30 p-8 cursor-pointer rounded-2xl flex flex-col justify-between transition-all duration-300 group"
           >
             <div className="space-y-4">

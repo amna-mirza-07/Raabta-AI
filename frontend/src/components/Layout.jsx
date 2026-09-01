@@ -5,27 +5,27 @@ import { Home, FileText, Activity, Landmark, Menu, X, HelpCircle } from 'lucide-
 const navItems = [
   {
     label: 'Home',
-    path: '/app',
+    path: '/',
     icon: Home
   },
   {
     label: 'How It Works',
-    path: '/app/how-it-works',
+    path: '/how-it-works',
     icon: HelpCircle
   },
   {
     label: 'Generate Complaint',
-    path: '/app/submit',
+    path: '/submit',
     icon: FileText
   },
   {
     label: 'Track Complaint',
-    path: '/app/track',
+    path: '/track',
     icon: Activity
   },
   {
     label: 'Department Queue',
-    path: '/app/department',
+    path: '/department',
     icon: Landmark
   },
 ]
@@ -75,6 +75,7 @@ function Layout() {
               <NavLink
                 key={item.path}
                 to={item.path}
+                end={item.path === '/' || item.path === '/app'}
                 className={({ isActive }) =>
                   `nav-link${isActive ? ' active' : ''}`
                 }

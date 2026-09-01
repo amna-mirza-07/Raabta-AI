@@ -134,7 +134,7 @@ function HowItWorksPage() {
         <div className="mt-6 flex justify-center gap-4">
           <button
             type="button"
-            onClick={() => navigate('/app/submit')}
+            onClick={() => navigate('/submit')}
             className="btn-primary"
           >
             <span>Start New Complaint</span>
@@ -142,12 +142,13 @@ function HowItWorksPage() {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/app')}
+            onClick={() => navigate('/')}
             className="btn-secondary"
           >
             <span>Back to Home</span>
           </button>
         </div>
+
       </section>
     </div>
   )

@@ -76,9 +76,12 @@ def test():
                 longitude
             )
 
-            print("Latitude :", latitude)
-            print("Longitude:", longitude)
-            print("Address  :", address)
+            try:
+                print("Latitude :", latitude)
+                print("Longitude:", longitude)
+                print("Address  :", address)
+            except Exception:
+                pass
 
         else:
 

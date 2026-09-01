@@ -64,9 +64,12 @@ def voice_report():
 
         user_text = voice_result.get("text", "").strip()
 
-        print("\n========== TRANSCRIPTION ==========")
-        print(user_text)
-        print("===================================\n")
+        try:
+            print("\n========== TRANSCRIPTION ==========")
+            print(user_text)
+            print("===================================\n")
+        except Exception:
+            pass
 
         if not user_text:
             return jsonify({
@@ -79,9 +82,13 @@ def voice_report():
         # --------------------------------
         issue_data = detect_issue_from_text(user_text)
 
-        print("\n========== ISSUE DATA ==========")
-        print(issue_data)
-        print("================================\n")
+        try:
+            print("\n========== ISSUE DATA ==========")
+            print(issue_data)
+            print("================================\n")
+        except Exception:
+            pass
+
 
         issue = issue_data.get(
             "issue",

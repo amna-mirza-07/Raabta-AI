@@ -1,8 +1,6 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 
-import LandingPage from './pages/LandingPage'
 import Layout from './components/Layout'
-
 import HomePage from './pages/HomePage'
 import SubmitComplaintPage from './pages/SubmitComplaintPage'
 import TrackComplaintPage from './pages/TrackComplaintPage'
@@ -14,50 +12,64 @@ const router = createBrowserRouter([
 
   {
     path: '/',
-    element: <LandingPage />,
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: 'submit',
+        element: <SubmitComplaintPage />,
+      },
+      {
+        path: 'track',
+        element: <TrackComplaintPage />,
+      },
+      {
+        path: 'department',
+        element: <DepartmentPage />,
+      },
+      {
+        path: 'how-it-works',
+        element: <HowItWorksPage />,
+      },
+    ],
   },
-
 
   {
     path: '/app',
     element: <Layout />,
     children: [
-
       {
         index: true,
         element: <HomePage />,
       },
-
       {
         path: 'submit',
         element: <SubmitComplaintPage />,
       },
-
       {
         path: 'track',
         element: <TrackComplaintPage />,
       },
-
       {
         path: 'department',
         element: <DepartmentPage />,
       },
-
       {
         path: 'how-it-works',
         element: <HowItWorksPage />,
       },
-
     ],
   },
 
-
   {
     path: '*',
-    element: <LandingPage />,
+    element: <Navigate to="/" replace />,
   }
 
 ])
 
 
-export default router
+export default router
