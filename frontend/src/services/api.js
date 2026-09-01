@@ -1,0 +1,207 @@
+const API_BASE = "http://127.0.0.1:5000/api"
+
+
+async function requestJson(endpoint, options = {}) {
+
+  const response = await fetch(
+    `${API_BASE}${endpoint}`,
+    options
+  )
+
+
+  const result = await response.json().catch(
+    () => ({})
+  )
+
+
+  if(!response.ok){
+
+    throw new Error(
+      result.error ||
+      result.message ||
+      `Request failed ${response.status}`
+    )
+
+  }
+
+
+  return result
+
+}
+
+
+
+// =================================
+// IMAGE COMPLAINT
+// =================================
+
+export async function submitImageComplaint({
+  image,
+  latitude,
+  longitude,
+  location
+}){
+
+
+  const formData = new FormData()
+
+
+  if(image){
+
+    formData.append(
+      "image",
+      image
+    )
+
+  }
+
+
+  if(latitude){
+
+    formData.append(
+      "latitude",
+      latitude
+    )
+
+  }
+
+
+  if(longitude){
+
+    formData.append(
+      "longitude",
+      longitude
+    )
+
+  }
+
+
+  if(location){
+
+    formData.append(
+      "location",
+      location
+    )
+
+  }
+
+
+
+  return requestJson(
+    "/report",
+    {
+      method:"POST",
+      body:formData
+    }
+  )
+
+}
+
+
+
+
+
+// =================================
+// VOICE COMPLAINT
+// =================================
+
+export async function submitVoiceComplaint(
+  audioFile,
+  location
+){
+
+
+  const formData = new FormData()
+
+
+  formData.append(
+    "audio",
+    audioFile
+  )
+
+
+  if(location){
+
+    formData.append(
+      "location",
+      location
+    )
+
+  }
+
+
+
+  return requestJson(
+    "/voice-report",
+    {
+      method:"POST",
+      body:formData
+    }
+  )
+
+}
+
+
+
+
+
+// =================================
+// TEXT COMPLAINT
+// =================================
+
+export async function submitTextComplaint({
+  text,
+  latitude,
+  longitude,
+  location
+}){
+
+
+  const formData = new FormData()
+
+
+  formData.append(
+    "text",
+    text
+  )
+
+
+  if (latitude) {
+    formData.append("latitude", latitude)
+  }
+
+
+  if (longitude) {
+    formData.append("longitude", longitude)
+  }
+
+
+  if (location) {
+    formData.append("location", location)
+  }
+
+
+
+  return requestJson(
+    "/text-report",
+    {
+      method:"POST",
+      body:formData
+    }
+  )
+
+}
+
+
+
+
+
+// =================================
+// OLD SUPPORT
+// =================================
+
+export async function submitReport(data){
+
+  return submitImageComplaint(data)
+
+}

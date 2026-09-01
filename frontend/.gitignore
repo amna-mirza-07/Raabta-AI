@@ -1,0 +1,33 @@
+# Python cache
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Python environments
+**/venv/
+**/.venv/
+
+# Secrets / API keys
+.env
+*.env
+config.env
+**/config.env
+
+# Node dependencies
+**/node_modules/
+
+# Build output
+**/dist/
+
+# Generated backend files
+**/uploads/
+**/outputs/
+
+# Audio files
+**/*.mp3
+**/*.m4a
+**/*.wav
+
+# OS files
+.DS_Store
+Thumbs.db
