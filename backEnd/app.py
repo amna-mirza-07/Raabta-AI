@@ -33,7 +33,7 @@ if os.getenv("GOOGLE_API_KEY"):
 else:
     print("[WARNING] GOOGLE_API_KEY not detected")
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from routes.report import report_bp
@@ -89,9 +89,14 @@ app.register_blueprint(
     name="voice_report_direct"
 )
 
-# Home Route
-@app.route("/", strict_slashes=False)
+# Home Route (gracefully handles any stripped POST requests without returning 405)
+@app.route("/", methods=["GET", "POST"], strict_slashes=False)
 def home():
+    if request.method == "POST":
+        return jsonify({
+            "status": "error",
+            "message": "Root endpoint does not accept complaints directly. Please call /api/text-report, /api/report, or /api/voice-report."
+        }), 400
     return "Welcome to Raabta AI Backend!"
 
 # Health Check Endpoint (supports both /api/health and /health)
@@ -107,6 +112,39 @@ def health():
         "ai_configured": bool(api_key),
         "model": model
     }), 200
+
+
+class VercelPathFixMiddleware:
+    """
+    WSGI middleware that restores the real requested path on Vercel.
+    When Vercel rewrites requests to /api/index.py, the Vercel Python runtime
+    populates PATH_INFO as '/' while preserving the original client request
+    path in HTTP_X_MATCHED_PATH or REQUEST_URI.
+    This middleware restores the original path so Flask's routing matches
+    the intended endpoint instead of falling back to '/'.
+    """
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        matched_path = (
+            environ.get("HTTP_X_MATCHED_PATH")
+            or environ.get("REQUEST_URI")
+            or environ.get("RAW_URI")
+            or environ.get("HTTP_X_FORWARDED_URI")
+            or environ.get("HTTP_X_ORIGINAL_URL")
+        )
+        if matched_path:
+            clean_path = matched_path.split("?")[0]
+            current_path = environ.get("PATH_INFO", "")
+            if current_path in ("/", "", "/index.py", "/api/index.py", "/api", "/api/"):
+                environ["PATH_INFO"] = clean_path
+
+        return self.wsgi_app(environ, start_response)
+
+
+# Attach middleware to Flask WSGI callable
+app.wsgi_app = VercelPathFixMiddleware(app.wsgi_app)
 
 # Run Flask Server
 if __name__ == "__main__":
