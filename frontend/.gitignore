@@ -9,9 +9,12 @@
 
 # Secrets / API keys
 .env
+.env.*
 *.env
 config.env
 **/config.env
+!.env.example
+!**/.env.example
 
 # Node dependencies
 **/node_modules/

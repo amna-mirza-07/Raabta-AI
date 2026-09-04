@@ -60,9 +60,15 @@ def voice_report():
         # --------------------------------
         # STEP 2 : Speech To Text
         # --------------------------------
-        voice_result = speech_to_text(audio_path)
-
-        user_text = voice_result.get("text", "").strip()
+        try:
+            voice_result = speech_to_text(audio_path)
+            user_text = voice_result.get("text", "").strip()
+        except Exception as stt_err:
+            print(f"[ERROR] Audio transcription failed: {stt_err}")
+            return jsonify({
+                "success": False,
+                "error": f"Audio processing error: {str(stt_err)}"
+            }), 400
 
         try:
             print("\n========== TRANSCRIPTION ==========")
@@ -88,7 +94,6 @@ def voice_report():
             print("================================\n")
         except Exception:
             pass
-
 
         issue = issue_data.get(
             "issue",
@@ -140,13 +145,14 @@ def voice_report():
             f"Thank you for using Raabta AI."
         )
 
-        audio_file = text_to_speech(
-            voice_message
-        )
-
-        print("\n========== TTS GENERATED ==========")
-        print(audio_file)
-        print("===================================\n")
+        audio_file = None
+        try:
+            audio_file = text_to_speech(voice_message)
+            print("\n========== TTS GENERATED ==========")
+            print(audio_file)
+            print("===================================\n")
+        except Exception as tts_err:
+            print(f"[WARN] TTS generation failed: {tts_err}")
 
         # --------------------------------
         # FINAL RESPONSE
@@ -175,11 +181,15 @@ def voice_report():
         print(e)
         print("=======================================\n")
 
+        err_msg = str(e)
+        if "AIza" in err_msg:
+            err_msg = "Error connecting to AI service."
+
         return jsonify({
 
             "success": False,
 
-            "error": str(e)
+            "error": err_msg
 
         }), 500
 

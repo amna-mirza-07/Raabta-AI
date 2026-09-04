@@ -1,6 +1,14 @@
-const API_BASE = import.meta.env.VITE_API_URL 
-  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, "")}/api`
-  : "http://127.0.0.1:5000/api"
+const rawApiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000/api"
+const trimmedApiUrl = rawApiUrl.replace(/\/+$/, "")
+const API_BASE = trimmedApiUrl.endsWith("/api")
+  ? trimmedApiUrl
+  : `${trimmedApiUrl}/api`
+
+export async function checkHealth() {
+  return requestJson("/health", {
+    method: "GET"
+  })
+}
 
 
 async function requestJson(endpoint, options = {}) {

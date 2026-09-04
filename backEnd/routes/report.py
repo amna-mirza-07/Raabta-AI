@@ -61,6 +61,19 @@ def test():
         print("Image saved")
 
         # -----------------------------
+        # Validate Image Integrity
+        # -----------------------------
+        try:
+            from PIL import Image as PILImage
+            with PILImage.open(image_path) as img:
+                img.verify()
+        except Exception as img_err:
+            return jsonify({
+                "status": "error",
+                "message": f"Invalid or corrupt image file: {str(img_err)}"
+            }), 400
+
+        # -----------------------------
         # Get User Location
         # -----------------------------
 
@@ -280,6 +293,13 @@ Powered by Google Gemma 4
             "report": report.to_dict()
 
         })
+
+    except Exception as e:
+        print("Error processing image report:", e)
+        return jsonify({
+            "status": "error",
+            "message": f"Failed to process image complaint: {str(e)}"
+        }), 500
 
     finally:
         try:

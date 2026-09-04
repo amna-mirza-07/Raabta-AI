@@ -10,27 +10,58 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-from flask import Flask
-from flask_cors import CORS
 from dotenv import load_dotenv
 
-# Load config.env if present
-config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.env")
-if os.path.exists(config_path):
-    load_dotenv(config_path)
+# Reliable environment loading
+current_dir = os.path.dirname(os.path.abspath(__file__))
+backend_env = os.path.join(current_dir, ".env")
+root_env = os.path.join(current_dir, "..", ".env")
+legacy_env = os.path.join(current_dir, "config.env")
+
+if os.path.exists(backend_env):
+    load_dotenv(backend_env)
+elif os.path.exists(root_env):
+    load_dotenv(root_env)
+elif os.path.exists(legacy_env):
+    load_dotenv(legacy_env)
+else:
+    load_dotenv()
+
+# Safe API key diagnostics (never print or expose the key)
+if os.getenv("GOOGLE_API_KEY"):
+    print("[OK] GOOGLE_API_KEY detected")
+else:
+    print("[WARNING] GOOGLE_API_KEY not detected")
+
+from flask import Flask, jsonify
+from flask_cors import CORS
 
 from routes.report import report_bp
 from routes.voice_report import voice_report_bp
 
-
-
 # Create Flask application
 app = Flask(__name__)
 
+# Configure CORS safely
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
 
-# Enable React frontend connection
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000", "http://127.0.0.1:3000", "*"]}}, supports_credentials=True)
+cors_env = os.getenv("CORS_ORIGINS", "")
+if cors_env:
+    for origin in cors_env.split(","):
+        origin = origin.strip()
+        if origin and origin not in allowed_origins:
+            allowed_origins.append(origin)
 
+CORS(
+    app,
+    resources={r"/api/*": {"origins": allowed_origins}},
+    supports_credentials=True
+)
 
 # Register Blueprints
 app.register_blueprint(
@@ -43,15 +74,23 @@ app.register_blueprint(
     url_prefix="/api"
 )
 
-
-print(app.url_map)
-
-
 # Home Route
 @app.route("/")
 def home():
     return "Welcome to Raabta AI Backend!"
 
+# Health Check Endpoint
+@app.route("/api/health", methods=["GET"])
+def health():
+    api_key = os.getenv("GOOGLE_API_KEY")
+    model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    return jsonify({
+        "success": True,
+        "service": "Raabta AI API",
+        "status": "healthy",
+        "ai_configured": bool(api_key),
+        "model": model
+    }), 200
 
 # Run Flask Server
 if __name__ == "__main__":
