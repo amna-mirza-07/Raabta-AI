@@ -13,30 +13,39 @@ export async function checkHealth() {
 
 async function requestJson(endpoint, options = {}) {
 
-  const response = await fetch(
-    `${API_BASE}${endpoint}`,
-    options
-  )
-
+  let response
+  try {
+    response = await fetch(
+      `${API_BASE}${endpoint}`,
+      options
+    )
+  } catch (err) {
+    if (err instanceof TypeError && err.message === "Failed to fetch") {
+      if (API_BASE.includes("127.0.0.1") || API_BASE.includes("localhost")) {
+        throw new Error(
+          `Cannot reach backend at ${API_BASE}. In production on Vercel, you must configure VITE_API_URL in Vercel Project Settings to your deployed backend HTTPS URL.`
+        )
+      }
+      throw new Error(
+        `Failed to connect to backend at ${API_BASE}. Please verify that your backend server is awake and accepting requests.`
+      )
+    }
+    throw err
+  }
 
   const result = await response.json().catch(
     () => ({})
   )
 
-
   if(!response.ok){
-
     throw new Error(
       result.error ||
       result.message ||
       `Request failed ${response.status}`
     )
-
   }
 
-
   return result
-
 }
 
 

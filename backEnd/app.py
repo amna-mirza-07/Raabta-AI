@@ -42,12 +42,15 @@ from routes.voice_report import voice_report_bp
 # Create Flask application
 app = Flask(__name__)
 
-# Configure CORS safely
+import re
+
+# Configure CORS safely (supports local dev and all Vercel production/preview deployments)
 allowed_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    re.compile(r"^https://.*\.vercel\.app$")
 ]
 
 cors_env = os.getenv("CORS_ORIGINS", "")
