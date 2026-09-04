@@ -1,3 +1,4 @@
+import os
 from faster_whisper import WhisperModel
 
 _model = None
@@ -6,10 +7,12 @@ def get_whisper_model():
     global _model
     if _model is None:
         print("Loading Whisper model...")
+        download_root = os.path.join("/tmp", "whisper") if os.environ.get("VERCEL") else None
         _model = WhisperModel(
             "base",
             device="cpu",
-            compute_type="int8"
+            compute_type="int8",
+            download_root=download_root
         )
         print("Whisper model loaded.")
     return _model

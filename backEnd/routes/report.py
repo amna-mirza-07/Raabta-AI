@@ -14,7 +14,7 @@ report_bp = Blueprint("report", __name__)
 
 print("REPORT ROUTE FILE:", __file__)
 
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = os.path.join("/tmp", "uploads") if os.environ.get("VERCEL") else "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 

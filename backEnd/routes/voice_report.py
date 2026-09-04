@@ -14,7 +14,7 @@ voice_report_bp = Blueprint(
     __name__
 )
 
-UPLOAD_FOLDER = "uploads"
+UPLOAD_FOLDER = os.path.join("/tmp", "uploads") if os.environ.get("VERCEL") else "uploads"
 
 
 @voice_report_bp.route("/voice-report", methods=["POST"])

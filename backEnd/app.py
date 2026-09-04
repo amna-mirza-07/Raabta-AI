@@ -66,15 +66,27 @@ CORS(
     supports_credentials=True
 )
 
-# Register Blueprints
+# Register Blueprints for both /api prefix and root (supports all serverless rewrite modes)
 app.register_blueprint(
     report_bp,
-    url_prefix="/api"
+    url_prefix="/api",
+    name="report_api"
+)
+app.register_blueprint(
+    report_bp,
+    url_prefix="",
+    name="report_direct"
 )
 
 app.register_blueprint(
     voice_report_bp,
-    url_prefix="/api"
+    url_prefix="/api",
+    name="voice_report_api"
+)
+app.register_blueprint(
+    voice_report_bp,
+    url_prefix="",
+    name="voice_report_direct"
 )
 
 # Home Route
@@ -82,8 +94,9 @@ app.register_blueprint(
 def home():
     return "Welcome to Raabta AI Backend!"
 
-# Health Check Endpoint
+# Health Check Endpoint (supports both /api/health and /health)
 @app.route("/api/health", methods=["GET"])
+@app.route("/health", methods=["GET"])
 def health():
     api_key = os.getenv("GOOGLE_API_KEY")
     model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")

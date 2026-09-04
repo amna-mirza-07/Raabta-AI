@@ -1,8 +1,8 @@
-const rawApiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000/api"
+const rawApiUrl = import.meta.env.VITE_API_URL || "/api"
 const trimmedApiUrl = rawApiUrl.replace(/\/+$/, "")
-const API_BASE = trimmedApiUrl.endsWith("/api")
-  ? trimmedApiUrl
-  : `${trimmedApiUrl}/api`
+const API_BASE = trimmedApiUrl === "" || trimmedApiUrl === "/api"
+  ? "/api"
+  : (trimmedApiUrl.endsWith("/api") ? trimmedApiUrl : `${trimmedApiUrl}/api`)
 
 export async function checkHealth() {
   return requestJson("/health", {
