@@ -18,7 +18,7 @@ UPLOAD_FOLDER = os.path.join("/tmp", "uploads") if os.environ.get("VERCEL") else
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
-@report_bp.route("/report", methods=["POST"])
+@report_bp.route("/report", methods=["POST"], strict_slashes=False)
 def test():
 
     image_path = None
@@ -309,7 +309,7 @@ Powered by Google Gemma 4
             pass
 
 
-@report_bp.route("/text-report", methods=["POST"])
+@report_bp.route("/text-report", methods=["POST"], strict_slashes=False)
 def text_report():
     print(">>> Text Report Request received")
 

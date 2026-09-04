@@ -62,7 +62,7 @@ if cors_env:
 
 CORS(
     app,
-    resources={r"/api/*": {"origins": allowed_origins}},
+    resources={r"/*": {"origins": allowed_origins}},
     supports_credentials=True
 )
 
@@ -90,13 +90,13 @@ app.register_blueprint(
 )
 
 # Home Route
-@app.route("/")
+@app.route("/", strict_slashes=False)
 def home():
     return "Welcome to Raabta AI Backend!"
 
 # Health Check Endpoint (supports both /api/health and /health)
-@app.route("/api/health", methods=["GET"])
-@app.route("/health", methods=["GET"])
+@app.route("/api/health", methods=["GET"], strict_slashes=False)
+@app.route("/health", methods=["GET"], strict_slashes=False)
 def health():
     api_key = os.getenv("GOOGLE_API_KEY")
     model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
